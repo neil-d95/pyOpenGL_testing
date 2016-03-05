@@ -58,6 +58,13 @@ def display():
         glVertex2f(-line_width, -num)
         glEnd()
         num += 0.25
+
+    # Draw Fixed triangle for 0 degrees Roll
+    glBegin(GL_TRIANGLES)
+    glVertex2f(0.0, 1.0)
+    glVertex2f(0.055, 1.055)
+    glVertex2f(-0.055, 1.055)
+    glEnd()
     glColor3f(0.0, 0.0, 1.0)
     glRectf(2.0, 2.0, -2.0, 0.0)
     glColor3f(0.5, 0.35, 0.05)
