@@ -5,7 +5,8 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-spin = 0.0
+roll = 0.0
+pitch = 0.0
 
 
 def init():
@@ -15,13 +16,18 @@ def init():
 
 
 def display():
-    global spin
-    print(spin)
-    time.sleep(0.06)
-    spin += 0.5
-    if(spin > 360.0):
-        spin = spin - 360.0
-    texts = str(spin)
+    global roll
+    global pitch
+    # width = glutGet(GLUT_WINDOW_WIDTH)
+    # height = glutGet(GLUT_WINDOW_HEIGHT)
+    # # print(str(width) + " x " + str(height))
+    #
+    # # time.sleep(0.06)
+    # # spin += 0.5
+    # # if(spin > 360.0):
+    # #     spin = spin - 360.0
+    text_roll = str(roll)
+    text_pitch = str(pitch)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glColor3f(1.0, 1.0, 1.0)
@@ -37,11 +43,16 @@ def display():
     glVertex2f(0.05, 0.95)
     glVertex2f(-0.05, 0.95)
     glEnd()
-    glRasterPos2f(2.5, 2.5)
-    for char in texts:
+    # Roll Text top Right
+    glRasterPos2f(2.0, 2.0)
+    for char in text_roll:
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(char))
+    glRasterPos2f(-2.0, 2.0)
+    for char in text_pitch:
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(char))
     glRectf(1.0, 0.01, -1.0, -0.01)
-    glRotatef(spin, 0.0, 0.0, 1.0)
+    glRotatef(roll, 0.0, 0.0, 1.0)
+    glRotatef(pitch, 1.0, 0.0, 0.0)
     # Draw Pitch marks half for 5 degrees whole for 10 degrees
     num = 0.25
     while num < 2.0:
@@ -77,18 +88,39 @@ def display():
 
 def reshape(w, h):
     glViewport(0, 0, w, h)
+    print(str(w) + " x " + str(h))
+    if h == 0:
+        h = 1
+    aspect = w/h
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0)
+    # glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0)
+    gluPerspective(45, aspect, 0.1, 1000)
     glMatrixMode(GL_MODELVIEW)
 
 
 def keyboard(key, x, y):
-    if key == chr(27):
-        import sys
-        sys.exit(0)
+    global roll
+    global pitch
 
+    if key == GLUT_KEY_LEFT or key == b"4":
+        print("Left")
+        roll += 0.5
+    elif key == GLUT_KEY_RIGHT or key == b"6":
+        print("Right")
+        roll -= 0.5
+    elif key == GLUT_KEY_UP or key == b"8":
+        print("Up")
+        pitch += 0.5
+    elif key == GLUT_KEY_DOWN or key == b"2":
+        print("Down")
+        pitch -= 0.5
+    elif key == 110 or key == b"5":
+        print("Center")
+        roll = 0.0
+        pitch = 0.0
 glutInit(sys.argv)
+
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
 glutInitWindowSize(500, 500)
 glutInitWindowPosition(100, 100)
@@ -97,4 +129,5 @@ init()
 glutDisplayFunc(display)
 glutReshapeFunc(reshape)
 glutKeyboardFunc(keyboard)
+glutSpecialFunc(keyboard)
 glutMainLoop()
