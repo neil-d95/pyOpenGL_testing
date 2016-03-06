@@ -54,9 +54,12 @@ def display():
     for char in text_pitch:
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(char))
     glColor3f(1.0, 1.0, 0.0)
+    # Airplane Reference Line
     glRectf(0.02, 0.02, -0.02, -0.02)
     glRectf(1.0, 0.01, 0.25, -0.01)
     glRectf(-0.25, 0.01, -1.0, -0.01)
+
+    # Start of background scene
     glRotatef(roll, 0.0, 0.0, 1.0)
     pitch_angle = pitch * 0.05
     glTranslatef(0.0, -pitch_angle, 0.0)
@@ -90,9 +93,9 @@ def display():
     # Draw Fixed triangle for 0 degrees Roll
     glTranslatef(0.0, pitch_angle, 0.0)
     glBegin(GL_TRIANGLES)
-    glVertex2f(0.0, 1.0)
-    glVertex2f(0.055, 1.055)
-    glVertex2f(-0.055, 1.055)
+    glVertex2f(0.0, 1.0 - pitch_angle)
+    glVertex2f(0.055, 1.055 - pitch_angle)
+    glVertex2f(-0.055, 1.055 - pitch_angle)
     glEnd()
     glColor3f(0.0, 0.0, 1.0)
     glRectf(2.0, 2.0, -2.0, -pitch_angle)
