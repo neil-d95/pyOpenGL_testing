@@ -18,14 +18,16 @@ def init():
 def display():
     global roll
     global pitch
-    # width = glutGet(GLUT_WINDOW_WIDTH)
-    # height = glutGet(GLUT_WINDOW_HEIGHT)
-    # # print(str(width) + " x " + str(height))
-    #
-    # # time.sleep(0.06)
-    # # spin += 0.5
-    # # if(spin > 360.0):
-    # #     spin = spin - 360.0
+
+    if(roll > 360.0):
+        roll = roll - 360.0
+    if(pitch > 90.0):
+        roll = roll + 180.0
+        pitch = 89.5
+    elif(pitch < -90.0):
+        roll = roll + 180.0
+        pitch = -89.5
+
     text_roll = str(roll)
     text_pitch = str(pitch)
     font = GLUT_BITMAP_HELVETICA_18
@@ -57,11 +59,11 @@ def display():
     glRectf(-0.25, 0.01, -1.0, -0.01)
     glRotatef(roll, 0.0, 0.0, 1.0)
     pitch_angle = pitch * 0.05
-    glTranslatef(0.0, pitch_angle, 0.0)
+    glTranslatef(0.0, -pitch_angle, 0.0)
     # Draw Pitch marks half for 5 degrees whole for 10 degrees
     glColor3f(1.0, 1.0, 1.0)
     num = 0.0
-    while num < 2.0:
+    while num <= 4.5:
         if num % 0.5 == 0:
             line_width = 1.0
         else:
@@ -86,15 +88,16 @@ def display():
         num += 0.25
 
     # Draw Fixed triangle for 0 degrees Roll
+    glTranslatef(0.0, pitch_angle, 0.0)
     glBegin(GL_TRIANGLES)
     glVertex2f(0.0, 1.0)
     glVertex2f(0.055, 1.055)
     glVertex2f(-0.055, 1.055)
     glEnd()
     glColor3f(0.0, 0.0, 1.0)
-    glRectf(2.0, 2.0, -2.0, 0.0)
+    glRectf(2.0, 2.0, -2.0, -pitch_angle)
     glColor3f(0.5, 0.35, 0.05)
-    glRectf(2.0, -2.0, -2.0, 0.0)
+    glRectf(2.0, -2.0, -2.0, -pitch_angle)
 
     glPopMatrix()
     glutSwapBuffers()
@@ -105,7 +108,7 @@ def reshape(w, h):
     glViewport(0, 0, w, h)
     if h == 0:
         h = 1
-    aspect = w/h
+    aspect = w / h
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     # glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0)
@@ -125,10 +128,16 @@ def keyboard(key, x, y):
         roll += 0.5
     elif key == GLUT_KEY_UP or key == b"8":
         print("Up")
-        pitch += 0.5
+        if roll > 90 and roll < 270:
+            pitch += 0.5
+        else:
+            pitch -= 0.5
     elif key == GLUT_KEY_DOWN or key == b"2":
         print("Down")
-        pitch -= 0.5
+        if roll > 90 and roll < 270:
+            pitch -= 0.5
+        else:
+            pitch += 0.5
     elif key == 110 or key == b"5":
         print("Center")
         roll = 0.0
