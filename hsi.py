@@ -93,14 +93,28 @@ def display():
     # Draw Fixed triangle for 0 degrees Roll
     glTranslatef(0.0, pitch_angle, 0.0)
     glBegin(GL_TRIANGLES)
-    glVertex2f(0.0, 1.0 - pitch_angle)
-    glVertex2f(0.055, 1.055 - pitch_angle)
-    glVertex2f(-0.055, 1.055 - pitch_angle)
+    glVertex2f(0.0, 1.0)
+    glVertex2f(0.055, 1.055)
+    glVertex2f(-0.055, 1.055)
     glEnd()
+    
+    # Sky Box
     glColor3f(0.0, 0.0, 1.0)
-    glRectf(2.0, 2.0, -2.0, -pitch_angle)
+    glBegin(GL_QUADS)
+    glVertex2f(-2.0, 2.0)
+    glVertex2f(-2.0, -pitch_angle)
+    glVertex2f(2.0, -pitch_angle)
+    glVertex2f(2.0, 2.0)
+    glEnd()
+
+    # Ground Box
     glColor3f(0.5, 0.35, 0.05)
-    glRectf(2.0, -2.0, -2.0, -pitch_angle)
+    glBegin(GL_QUADS)
+    glVertex2f(-2.0, -pitch_angle)
+    glVertex2f(-2.0, -2.0)
+    glVertex2f(2.0, -2.0)
+    glVertex2f(2.0, -pitch_angle)
+    glEnd()
 
     glPopMatrix()
     glutSwapBuffers()
