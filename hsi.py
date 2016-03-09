@@ -21,6 +21,8 @@ def display():
 
     if(roll > 360.0):
         roll = roll - 360.0
+    elif(roll == 0):
+        roll = 360.0
     if(pitch > 90.0):
         roll = roll + 180.0
         pitch = 89.5
@@ -58,6 +60,22 @@ def display():
     glRectf(0.02, 0.02, -0.02, -0.02)
     glRectf(1.0, 0.01, 0.25, -0.01)
     glRectf(-0.25, 0.01, -1.0, -0.01)
+
+    glColor3f(0.0, 0.0, 0.0)
+    glBegin(GL_QUADS)
+    glVertex2f(2.0, 4.0)
+    glVertex2f(2.0, -4.0)
+    glVertex2f(5.0, -4.0)
+    glVertex2f(5.0, 4.0)
+    glEnd()
+
+    glColor3f(0.0, 0.0, 0.0)
+    glBegin(GL_QUADS)
+    glVertex2f(-2.0, 4.0)
+    glVertex2f(-2.0, -4.0)
+    glVertex2f(-5.0, -4.0)
+    glVertex2f(-5.0, 4.0)
+    glEnd()
 
     # Start of background scene
     glRotatef(roll, 0.0, 0.0, 1.0)
@@ -97,23 +115,23 @@ def display():
     glVertex2f(0.055, 1.055)
     glVertex2f(-0.055, 1.055)
     glEnd()
-    
+
     # Sky Box
     glColor3f(0.0, 0.0, 1.0)
     glBegin(GL_QUADS)
-    glVertex2f(-2.0, 2.0)
-    glVertex2f(-2.0, -pitch_angle)
-    glVertex2f(2.0, -pitch_angle)
-    glVertex2f(2.0, 2.0)
+    glVertex2f(-3.0, 3.0)
+    glVertex2f(-3.0, -pitch_angle)
+    glVertex2f(3.0, -pitch_angle)
+    glVertex2f(3.0, 3.0)
     glEnd()
 
     # Ground Box
     glColor3f(0.5, 0.35, 0.05)
     glBegin(GL_QUADS)
-    glVertex2f(-2.0, -pitch_angle)
-    glVertex2f(-2.0, -2.0)
-    glVertex2f(2.0, -2.0)
-    glVertex2f(2.0, -pitch_angle)
+    glVertex2f(-3.0, -pitch_angle)
+    glVertex2f(-3.0, -3.0)
+    glVertex2f(3.0, -3.0)
+    glVertex2f(3.0, -pitch_angle)
     glEnd()
 
     glPopMatrix()
