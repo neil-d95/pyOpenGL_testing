@@ -1,12 +1,346 @@
 #!/usr/bin/python
 import sys
-import time
+from math import radians, tan, sin, cos
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+# Changed for working on inverted
 roll = 0.0
 pitch = 0.0
+
+
+def box_cal(roll, pitch_angle):
+    x_max = 2.0
+    y_max = 2.0
+    pitch_roll = roll + 90
+    sector = int(roll / 90)
+    roll = roll % 90.0
+    roll_rad = radians(roll)
+    x_hoz_right = x_max
+    x_hoz_left = -x_max
+    y_hoz_right = x_max
+    y_hoz_left = -x_max
+    if sector == 0:
+        if roll >= 0 and roll <= 45:
+            blue_top_right = 2, 2
+            blue_top_left = -2, 2
+            blue_top_extra = -2, 2
+            brown_bottom_extra = 2, -2
+            brown_bottom_right = 2, -2
+            brown_bottom_left = -2, -2
+
+            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            y_hoz_left = (tan(roll_rad) * -x_max) - diff_y
+            y_hoz_right = (tan(roll_rad) * x_max) - diff_y
+
+            over_y_right = y_hoz_right - 2.0
+            under_y_left = y_hoz_left + 2.0
+            if y_hoz_left <= -2.0:
+                y_hoz_left = -2.0
+                if roll != 0:
+                    x_hoz_left = -x_max - (under_y_left / tan(radians(roll)))
+                if x_hoz_left >= 2.0:
+                    x_hoz_left = 2.0
+                brown_bottom_left = x_hoz_left, -2
+                blue_top_extra = -2, -2
+            if y_hoz_left >= 2.0:
+                y_hoz_left = 2.0
+            if y_hoz_right <= -2.0:
+                y_hoz_right = -2.0
+            if y_hoz_right >= 2.0:
+                y_hoz_right = 2.0
+                if roll != 0:
+                    x_hoz_right = x_max - (over_y_right / tan(radians(roll)))
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+                blue_top_right = x_hoz_right, 2
+                brown_bottom_extra = 2, 2
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+        elif roll > 45 and roll < 90:
+            blue_top_right = -2, 2
+            blue_top_left = -2, 2
+            blue_top_extra = -2, -2
+            brown_bottom_extra = 2, 2
+            brown_bottom_right = 2, -2
+            brown_bottom_left = 2, -2
+
+            diff = 1 / cos(radians(pitch_roll)) * pitch_angle
+            x_hoz_right = (1 / tan(roll_rad) * y_max) - diff
+            x_hoz_left = (1 / tan(roll_rad) * -y_max) - diff
+            over_x_right = x_hoz_right - 2.0
+            under_x_left = x_hoz_left + 2.0
+            if x_hoz_right >= 2.0:
+                x_hoz_right = 2.0
+                y_hoz_right = x_max - (over_x_right * tan(radians(roll)))
+                if y_hoz_right <= -2.0:
+                    y_hoz_right = -2.0
+                blue_top_right = 2, 2
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+            if x_hoz_left >= 2.0:
+                x_hoz_left = 2.0
+            if x_hoz_right <= -2.0:
+                x_hoz_right = -2.0
+            if x_hoz_left <= -2.0:
+                x_hoz_left = -2.0
+                y_hoz_left = -y_max - (under_x_left * tan(radians(roll)))
+                if y_hoz_left >= 2.0:
+                    y_hoz_left = 2.0
+                brown_bottom_left = -2, -2
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+    elif sector == 1:
+        if roll >= 0 and roll <= 45:
+            blue_top_right = -2, -2
+            blue_top_left = -2, -2
+            blue_top_extra = -2, 2
+            brown_bottom_extra = 2, -2
+            brown_bottom_right = 2, 2
+            brown_bottom_left = 2, 2
+
+            diff_y = pitch_angle / cos(radians(pitch_roll))
+            x_hoz_left = (y_max * tan(roll_rad)) + diff_y
+            x_hoz_right = (-y_max * tan(roll_rad)) + diff_y
+
+            over_x_right = x_hoz_right + 2.0
+            under_x_left = x_hoz_left - 2.0
+
+            if x_hoz_left >= 2.0:
+                x_hoz_left = 2.0
+                if roll != 0:
+                    y_hoz_left = -(y_max - (under_x_left /
+                                   tan(radians(roll))))
+                if y_hoz_left >= 2.0:
+                    y_hoz_left = 2.0
+                brown_bottom_left = -2, 2
+                blue_top_extra = -2, -2
+
+            if x_hoz_right >= 2.0:
+                x_hoz_right = 2.0
+
+            if x_hoz_right <= -2.0:
+                x_hoz_right = -2.0
+                if roll != 0:
+                    y_hoz_right = -(-y_max - (over_x_right /
+                                    tan(radians(roll))))
+                if y_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+
+                blue_top_right = 2, -2
+                brown_bottom_extra = 2, -2
+
+            if x_hoz_left <= -2.0:
+                x_hoz_left = -2.0
+
+            hoz_right = -x_hoz_right, -y_hoz_right
+            hoz_left = -x_hoz_left, -y_hoz_left
+
+        elif roll > 45 and roll < 90:
+            blue_top_right = 2, -2
+            blue_top_left = -2, -2
+            blue_top_extra = -2, -2
+            brown_bottom_extra = 2, 2
+            brown_bottom_right = 2, 2
+            brown_bottom_left = -2, 2
+
+            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            y_hoz_left = (x_max / tan(roll_rad)) - diff_y
+            y_hoz_right = (-x_max / tan(roll_rad)) - diff_y
+            over_y_left = y_hoz_left - 2.0
+            under_y_right = y_hoz_right + 2.0
+
+            if y_hoz_left >= 2.0:
+                y_hoz_left = 2.0
+                x_hoz_left = -x_max + (over_y_left * tan(radians(roll)))
+                if x_hoz_left >= 2.0:
+                    x_hoz_left = 2.0
+                brown_bottom_left = x_hoz_left, 2
+                blue_top_extra = -2, 2
+
+            if y_hoz_right >= 2.0:
+                y_hoz_right = 2.0
+            if y_hoz_right <= -2.0:
+                y_hoz_right = -2.0
+                x_hoz_right = x_max + (under_y_right * tan(radians(roll)))
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+                brown_bottom_extra = 2, -2
+                blue_top_right = x_hoz_right, -2
+            if y_hoz_left <= -2.0:
+                y_hoz_left = -2.0
+
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+
+    elif sector == 2:
+        if roll >= 0 and roll <= 45:
+            blue_top_right = 2, -2
+            blue_top_left = 2, -2
+            blue_top_extra = -2, -2
+            brown_bottom_right = 2, 2
+            brown_bottom_left = -2, 2
+            brown_bottom_extra = 2, 2
+
+            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            y_hoz_left = (-x_max * tan(roll_rad)) - diff_y
+            y_hoz_right = (x_max * tan(roll_rad)) - diff_y
+            over_y_right = y_hoz_right - 2.0
+            under_y_left = y_hoz_left + 2.0
+
+            if y_hoz_left <= -2.0:
+                y_hoz_left = -2.0
+                if roll != 0:
+                    x_hoz_left = -(y_max + (under_y_left /
+                                   tan(radians(roll))))
+                if x_hoz_left >= 2.0:
+                    x_hoz_left = 2.0
+                brown_bottom_left = -2, -2
+                brown_bottom_right = -2, 2
+
+            if y_hoz_right <= -2.0:
+                y_hoz_right = -2.0
+
+            if y_hoz_right >= 2.0:
+                y_hoz_right = 2.0
+                if roll != 0:
+                    x_hoz_right = -(-y_max + (over_y_right /
+                                    tan(radians(roll))))
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+                blue_top_right = 2, 2
+
+            if y_hoz_left >= 2.0:
+                y_hoz_left = 2.0
+
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+
+        elif roll > 45 and roll < 90:
+            blue_top_right = 2, 2
+            blue_top_left = 2, -2
+            blue_top_extra = 2, -2
+            brown_bottom_extra = -2, 2
+            brown_bottom_right = -2, 2
+            brown_bottom_left = -2, -2
+
+            diff_x = pitch_angle / cos(radians(pitch_roll))
+            x_hoz_left = (-y_max / tan(roll_rad)) - diff_x
+            x_hoz_right = (y_max / tan(roll_rad)) - diff_x
+
+            over_x_right = x_hoz_right - 2.0
+            under_x_left = x_hoz_left + 2.0
+
+            if x_hoz_left <= -2.0:
+                x_hoz_left = -2.0
+                y_hoz_left = -y_max - (under_x_left * tan(radians(roll)))
+                if y_hoz_left >= 2.0:
+                    y_hoz_left = 2.0
+                brown_bottom_left = -2, y_hoz_left
+                blue_top_extra = -2, -2
+
+            if x_hoz_right <= -2.0:
+                x_hoz_right = -2.0
+
+            if x_hoz_right >= 2.0:
+                x_hoz_right = 2.0
+                y_hoz_right = x_max - (over_x_right * tan(radians(roll)))
+                if y_hoz_right <= -2.0:
+                    y_hoz_right = -2.0
+                blue_top_right = 2, -2
+                brown_bottom_extra = 2, 2
+
+            if x_hoz_left >= 2.0:
+                x_hoz_left = 2.0
+            # Wht the reverse on the y axis?
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+
+    elif sector == 3:
+        if roll >= 0 and roll <= 45:
+            blue_top_right = 2, -2
+            blue_top_left = 2, 2
+            blue_top_extra = 2, 2
+            brown_bottom_extra = -2, -2
+            brown_bottom_right = -2, -2
+            brown_bottom_left = -2, 2
+
+            diff_x = pitch_angle / cos(radians(pitch_roll))
+            x_hoz_left = (-y_max * tan(roll_rad)) - diff_x
+            x_hoz_right = (y_max * tan(roll_rad)) - diff_x
+
+            over_x_right = x_hoz_right - 2.0
+            under_x_left = x_hoz_left + 2.0
+
+            if x_hoz_left <= -2.0:
+                x_hoz_left = -2.0
+                if roll != 0:
+                    y_hoz_left = -y_max - (under_x_left / tan(radians(roll)))
+                if y_hoz_left >= 2.0:
+                    y_hoz_left = 2.0
+                brown_bottom_left = -2, -y_hoz_left
+                blue_top_extra = -2, 2
+
+            if x_hoz_right <= -2.0:
+                x_hoz_right = -2.0
+
+            if x_hoz_right >= 2.0:
+                x_hoz_right = 2.0
+                if roll != 0:
+                    y_hoz_right = x_max - (over_x_right / tan(radians(roll)))
+                if y_hoz_right <= -2.0:
+                    y_hoz_right = -2.0
+                blue_top_right = 2, 2
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+                brown_bottom_extra = 2, -2
+
+            if x_hoz_left >= 2.0:
+                x_hoz_left = 2.0
+            # Wht the reverse on the y axis?
+            hoz_right = x_hoz_right, -y_hoz_right
+            hoz_left = x_hoz_left, -y_hoz_left
+
+        elif roll > 45 and roll < 90:
+            blue_top_right = 2, 2
+            blue_top_left = -2, 2
+            blue_top_extra = -2, 2
+            brown_bottom_extra = 2, -2
+            brown_bottom_right = 2, -2
+            brown_bottom_left = -2, -2
+
+            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            y_hoz_left = (x_max / tan(roll_rad)) - diff_y
+            y_hoz_right = (-x_max / tan(roll_rad)) - diff_y
+            over_y_left = y_hoz_left - 2.0
+            under_y_right = y_hoz_right + 2.0
+
+            if y_hoz_left >= 2.0:
+                y_hoz_left = 2.0
+                x_hoz_left = -x_max + (over_y_left * tan(radians(roll)))
+                if x_hoz_left >= 2.0:
+                    x_hoz_left = 2.0
+                brown_bottom_left = -2, 2
+                brown_bottom_right = -2, -2
+            if y_hoz_right >= 2.0:
+                y_hoz_right = 2.0
+            if y_hoz_right <= -2.0:
+                y_hoz_right = -2.0
+                x_hoz_right = x_max + (under_y_right * tan(radians(roll)))
+                if x_hoz_right <= -2.0:
+                    x_hoz_right = -2.0
+                blue_top_right = 2, -2
+                blue_top_left = 2, 2
+            if y_hoz_left <= -2.0:
+                y_hoz_left = -2.0
+
+            hoz_right = x_hoz_right, y_hoz_right
+            hoz_left = x_hoz_left, y_hoz_left
+
+    return(blue_top_left, blue_top_extra, blue_top_right,
+           hoz_left, hoz_right,
+           brown_bottom_left, brown_bottom_extra, brown_bottom_right)
 
 
 def init():
@@ -19,16 +353,25 @@ def display():
     global roll
     global pitch
 
-    if(roll > 360.0):
+    if(roll >= 360.0):
         roll = roll - 360.0
-    elif(roll == 0):
-        roll = 360.0
+    elif(roll < 0):
+        roll = 359.5
+
     if(pitch > 90.0):
-        roll = roll + 180.0
+        if roll < 180:
+            roll = roll + 180.0
+        else:
+            roll = roll - 180.0
         pitch = 89.5
     elif(pitch < -90.0):
-        roll = roll + 180.0
+        if roll < 180:
+            roll = roll + 180.0
+        else:
+            roll = roll - 180.0
         pitch = -89.5
+
+    print(pitch, roll)
 
     text_roll = str(roll)
     text_pitch = str(pitch)
@@ -60,22 +403,6 @@ def display():
     glRectf(0.02, 0.02, -0.02, -0.02)
     glRectf(1.0, 0.01, 0.25, -0.01)
     glRectf(-0.25, 0.01, -1.0, -0.01)
-
-    glColor3f(0.0, 0.0, 0.0)
-    glBegin(GL_QUADS)
-    glVertex2f(2.0, 4.0)
-    glVertex2f(2.0, -4.0)
-    glVertex2f(5.0, -4.0)
-    glVertex2f(5.0, 4.0)
-    glEnd()
-
-    glColor3f(0.0, 0.0, 0.0)
-    glBegin(GL_QUADS)
-    glVertex2f(-2.0, 4.0)
-    glVertex2f(-2.0, -4.0)
-    glVertex2f(-5.0, -4.0)
-    glVertex2f(-5.0, 4.0)
-    glEnd()
 
     # Start of background scene
     glRotatef(roll, 0.0, 0.0, 1.0)
@@ -116,22 +443,33 @@ def display():
     glVertex2f(-0.055, 1.055)
     glEnd()
 
+    glRotatef(-roll, 0.0, 0.0, 1.0)
+
+    points = box_cal(roll, pitch_angle)
+    # 0-blue_top_left, 1-blue_top_extra, 2-blue_top_right,
+    # 3-hoz_left, 4-hoz_right,
+    # 5-brown_bottom_left, 6-brown_bottom_extra 7-brown_bottom_right
+
+    print(points)
+
     # Sky Box
     glColor3f(0.0, 0.0, 1.0)
-    glBegin(GL_QUADS)
-    glVertex2f(-3.0, 3.0)
-    glVertex2f(-3.0, -pitch_angle)
-    glVertex2f(3.0, -pitch_angle)
-    glVertex2f(3.0, 3.0)
+    glBegin(GL_POLYGON)
+    glVertex2f(points[3][0], points[3][1])
+    glVertex2f(points[1][0], points[1][1])
+    glVertex2f(points[0][0], points[0][1])
+    glVertex2f(points[2][0], points[2][1])
+    glVertex2f(points[4][0], points[4][1])
     glEnd()
 
     # Ground Box
     glColor3f(0.5, 0.35, 0.05)
-    glBegin(GL_QUADS)
-    glVertex2f(-3.0, -pitch_angle)
-    glVertex2f(-3.0, -3.0)
-    glVertex2f(3.0, -3.0)
-    glVertex2f(3.0, -pitch_angle)
+    glBegin(GL_POLYGON)
+    glVertex2f(points[5][0], points[5][1])
+    glVertex2f(points[3][0], points[3][1])
+    glVertex2f(points[4][0], points[4][1])
+    glVertex2f(points[6][0], points[6][1])
+    glVertex2f(points[7][0], points[7][1])
     glEnd()
 
     glPopMatrix()
