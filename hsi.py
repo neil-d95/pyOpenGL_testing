@@ -30,7 +30,7 @@ def box_cal(roll, pitch_angle):
             brown_bottom_right = 2, -2
             brown_bottom_left = -2, -2
 
-            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            diff_y = pitch_angle / sin(radians(pitch_roll))
             y_hoz_left = (tan(roll_rad) * -x_max) - diff_y
             y_hoz_right = (tan(roll_rad) * x_max) - diff_y
 
@@ -66,9 +66,9 @@ def box_cal(roll, pitch_angle):
             brown_bottom_right = 2, -2
             brown_bottom_left = 2, -2
 
-            diff = 1 / cos(radians(pitch_roll)) * pitch_angle
-            x_hoz_right = (1 / tan(roll_rad) * y_max) - diff
-            x_hoz_left = (1 / tan(roll_rad) * -y_max) - diff
+            diff = pitch_angle / cos(radians(pitch_roll))
+            x_hoz_right = (y_max / tan(roll_rad)) - diff
+            x_hoz_left = (-y_max / tan(roll_rad)) - diff
             over_x_right = x_hoz_right - 2.0
             under_x_left = x_hoz_left + 2.0
             if x_hoz_right >= 2.0:
@@ -145,7 +145,7 @@ def box_cal(roll, pitch_angle):
             brown_bottom_right = 2, 2
             brown_bottom_left = -2, 2
 
-            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            diff_y = pitch_angle / sin(radians(pitch_roll))
             y_hoz_left = (x_max / tan(roll_rad)) - diff_y
             y_hoz_right = (-x_max / tan(roll_rad)) - diff_y
             over_y_left = y_hoz_left - 2.0
@@ -183,7 +183,7 @@ def box_cal(roll, pitch_angle):
             brown_bottom_left = -2, 2
             brown_bottom_extra = 2, 2
 
-            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            diff_y = pitch_angle / sin(radians(pitch_roll))
             y_hoz_left = (-x_max * tan(roll_rad)) - diff_y
             y_hoz_right = (x_max * tan(roll_rad)) - diff_y
             over_y_right = y_hoz_right - 2.0
@@ -310,7 +310,7 @@ def box_cal(roll, pitch_angle):
             brown_bottom_right = 2, -2
             brown_bottom_left = -2, -2
 
-            diff_y = 1 / sin(radians(pitch_roll)) * pitch_angle
+            diff_y = pitch_angle / sin(radians(pitch_roll))
             y_hoz_left = (x_max / tan(roll_rad)) - diff_y
             y_hoz_right = (-x_max / tan(roll_rad)) - diff_y
             over_y_left = y_hoz_left - 2.0
