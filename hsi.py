@@ -56,8 +56,7 @@ def box_cal(roll, pitch_angle):
                     x_hoz_right = -2.0
                 blue_top_right = x_hoz_right, 2
                 brown_bottom_extra = 2, 2
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
+
         elif roll > 45 and roll < 90:
             blue_top_right = -2, 2
             blue_top_left = -2, 2
@@ -69,8 +68,10 @@ def box_cal(roll, pitch_angle):
             diff = pitch_angle / cos(radians(pitch_roll))
             x_hoz_right = (y_max / tan(roll_rad)) - diff
             x_hoz_left = (-y_max / tan(roll_rad)) - diff
+
             over_x_right = x_hoz_right - 2.0
             under_x_left = x_hoz_left + 2.0
+
             if x_hoz_right >= 2.0:
                 x_hoz_right = 2.0
                 y_hoz_right = x_max - (over_x_right * tan(radians(roll)))
@@ -89,20 +90,19 @@ def box_cal(roll, pitch_angle):
                 if y_hoz_left >= 2.0:
                     y_hoz_left = 2.0
                 brown_bottom_left = -2, -2
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
+
     elif sector == 1:
         if roll >= 0 and roll <= 45:
-            blue_top_right = -2, -2
+            blue_top_right = -2, 2
             blue_top_left = -2, -2
-            blue_top_extra = -2, 2
-            brown_bottom_extra = 2, -2
+            blue_top_extra = -2, -2
+            brown_bottom_extra = 2, 2
             brown_bottom_right = 2, 2
-            brown_bottom_left = 2, 2
+            brown_bottom_left = 2, -2
 
             diff_y = pitch_angle / cos(radians(pitch_roll))
-            x_hoz_left = (y_max * tan(roll_rad)) + diff_y
-            x_hoz_right = (-y_max * tan(roll_rad)) + diff_y
+            x_hoz_left = (y_max * tan(roll_rad)) - diff_y
+            x_hoz_right = (-y_max * tan(roll_rad)) - diff_y
 
             over_x_right = x_hoz_right + 2.0
             under_x_left = x_hoz_left - 2.0
@@ -110,12 +110,11 @@ def box_cal(roll, pitch_angle):
             if x_hoz_left >= 2.0:
                 x_hoz_left = 2.0
                 if roll != 0:
-                    y_hoz_left = -(y_max - (under_x_left /
-                                   tan(radians(roll))))
-                if y_hoz_left >= 2.0:
-                    y_hoz_left = 2.0
-                brown_bottom_left = -2, 2
-                blue_top_extra = -2, -2
+                    y_hoz_left = -(y_max - (under_x_left / tan(radians(roll))))
+                if y_hoz_left <= -2.0:
+                    y_hoz_left = -2.0
+                brown_bottom_left = 2, 2
+                blue_top_extra = 2, -2
 
             if x_hoz_right >= 2.0:
                 x_hoz_right = 2.0
@@ -126,16 +125,13 @@ def box_cal(roll, pitch_angle):
                     y_hoz_right = -(-y_max - (over_x_right /
                                     tan(radians(roll))))
                 if y_hoz_right <= -2.0:
-                    x_hoz_right = -2.0
+                    y_hoz_right = -2.0
 
-                blue_top_right = 2, -2
-                brown_bottom_extra = 2, -2
+                blue_top_right = -2, -2
+                brown_bottom_extra = -2, 2
 
-            if x_hoz_left <= -2.0:
-                x_hoz_left = -2.0
-
-            hoz_right = -x_hoz_right, -y_hoz_right
-            hoz_left = -x_hoz_left, -y_hoz_left
+            if y_hoz_left >= 2.0:
+                y_hoz_left = 2.0
 
         elif roll > 45 and roll < 90:
             blue_top_right = 2, -2
@@ -170,9 +166,6 @@ def box_cal(roll, pitch_angle):
                 blue_top_right = x_hoz_right, -2
             if y_hoz_left <= -2.0:
                 y_hoz_left = -2.0
-
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
 
     elif sector == 2:
         if roll >= 0 and roll <= 45:
@@ -214,9 +207,6 @@ def box_cal(roll, pitch_angle):
             if y_hoz_left >= 2.0:
                 y_hoz_left = 2.0
 
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
-
         elif roll > 45 and roll < 90:
             blue_top_right = 2, 2
             blue_top_left = 2, -2
@@ -253,9 +243,6 @@ def box_cal(roll, pitch_angle):
 
             if x_hoz_left >= 2.0:
                 x_hoz_left = 2.0
-            # Wht the reverse on the y axis?
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
 
     elif sector == 3:
         if roll >= 0 and roll <= 45:
@@ -265,6 +252,8 @@ def box_cal(roll, pitch_angle):
             brown_bottom_extra = -2, -2
             brown_bottom_right = -2, -2
             brown_bottom_left = -2, 2
+            y_hoz_right = -y_hoz_right
+            y_hoz_left = -y_hoz_left
 
             diff_x = pitch_angle / cos(radians(pitch_roll))
             x_hoz_left = (-y_max * tan(roll_rad)) - diff_x
@@ -276,9 +265,10 @@ def box_cal(roll, pitch_angle):
             if x_hoz_left <= -2.0:
                 x_hoz_left = -2.0
                 if roll != 0:
-                    y_hoz_left = -y_max - (under_x_left / tan(radians(roll)))
-                if y_hoz_left >= 2.0:
-                    y_hoz_left = 2.0
+                    y_hoz_left = -(-y_max - (under_x_left /
+                                   tan(radians(roll))))
+                if y_hoz_left <= -2.0:
+                    y_hoz_left = -2.0
                 brown_bottom_left = -2, -y_hoz_left
                 blue_top_extra = -2, 2
 
@@ -288,9 +278,10 @@ def box_cal(roll, pitch_angle):
             if x_hoz_right >= 2.0:
                 x_hoz_right = 2.0
                 if roll != 0:
-                    y_hoz_right = x_max - (over_x_right / tan(radians(roll)))
-                if y_hoz_right <= -2.0:
-                    y_hoz_right = -2.0
+                    y_hoz_right = -(x_max - (over_x_right /
+                                    tan(radians(roll))))
+                if y_hoz_right >= 2.0:
+                    y_hoz_right = 2.0
                 blue_top_right = 2, 2
                 if x_hoz_right <= -2.0:
                     x_hoz_right = -2.0
@@ -298,9 +289,6 @@ def box_cal(roll, pitch_angle):
 
             if x_hoz_left >= 2.0:
                 x_hoz_left = 2.0
-            # Wht the reverse on the y axis?
-            hoz_right = x_hoz_right, -y_hoz_right
-            hoz_left = x_hoz_left, -y_hoz_left
 
         elif roll > 45 and roll < 90:
             blue_top_right = 2, 2
@@ -335,8 +323,8 @@ def box_cal(roll, pitch_angle):
             if y_hoz_left <= -2.0:
                 y_hoz_left = -2.0
 
-            hoz_right = x_hoz_right, y_hoz_right
-            hoz_left = x_hoz_left, y_hoz_left
+    hoz_right = x_hoz_right, y_hoz_right
+    hoz_left = x_hoz_left, y_hoz_left
 
     return(blue_top_left, blue_top_extra, blue_top_right,
            hoz_left, hoz_right,
